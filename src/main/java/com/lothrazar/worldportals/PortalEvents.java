@@ -1,6 +1,7 @@
 package com.lothrazar.worldportals;
 
 import net.minecraft.block.Blocks;
+import net.minecraft.client.Minecraft;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -54,28 +55,34 @@ public class PortalEvents {
     }
   }
 
+  public static String lang(String message) {
+    TranslationTextComponent t = new TranslationTextComponent(message);
+    return t.getFormattedText();
+  }
+
   // F3 screen text overlay event
   @SubscribeEvent
   @OnlyIn(Dist.CLIENT)
   public void onDebugOverlay(RenderGameOverlayEvent.Text event) {
     BlockPos pos = ExampleMod.proxy.getClientPlayer().getPosition();
+    if (Minecraft.getInstance().gameSettings.showDebugInfo == false) {
+      return;
+    } //if f3 is not pressed
     switch (this.allowedHere(ExampleMod.proxy.getClientWorld(), pos)) {
       case ALLOWED:
-        event.getLeft().add(ExampleMod.MODID + ".f3.allowed " + pos);
+        event.getLeft().add(lang(ExampleMod.MODID + ".f3.allowed"));
       break;
       case DIMENSION:
-        event.getLeft().add(ExampleMod.MODID + ".f3.dimension");
+        event.getLeft().add(lang(ExampleMod.MODID + ".f3.dimension"));
       break;
       case XGRID:
-        event.getLeft().add(ExampleMod.MODID + ".f3.xgrid");
+        event.getLeft().add(lang(ExampleMod.MODID + ".f3.xgrid"));
       break;
       case YGRID:
-        event.getLeft().add(ExampleMod.MODID + ".f3.ygrid");
+        event.getLeft().add(lang(ExampleMod.MODID + ".f3.ygrid"));
       break;
       case ZGRID:
-        event.getLeft().add(ExampleMod.MODID + ".f3.zgrid");
-      break;
-      default:
+        event.getLeft().add(lang(ExampleMod.MODID + ".f3.zgrid"));
       break;
     }
   }

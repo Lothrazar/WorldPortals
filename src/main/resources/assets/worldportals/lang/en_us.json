@@ -1,7 +1,7 @@
 {
-	"worldportals".f3.xgrid":"Outside of east-west gridlines",
-	"worldportals".f3.ygrid":"Too close to the void",
-	"worldportals".f3.zgrid":"Outside of north-south gridlines",
-	"worldportals".f3.allowed":"Portal gridlines detected",
-	"worldportals".f3.dimension":"Overworld only"
+	"worldportals.f3.xgrid":"Lattice: wavelength invalid",
+	"worldportals.f3.ygrid":"Lattice: void interference",
+	"worldportals.f3.zgrid":"Lattice: amplitude invalid",
+	"worldportals.f3.allowed":"Lattice: connection plausable",
+	"worldportals.f3.dimension":"Lattice: feedback overload"
 }
