@@ -21,12 +21,12 @@ public class ConfigManager {
   }
 
   private static void initConfig() {
-    COMMON_BUILDER.comment("General settings").push(ExampleMod.MODID);
+    COMMON_BUILDER.comment("General settings").push(LatticePortalsMod.MODID);
     GRID = COMMON_BUILDER.comment("Grid size").defineInRange("grid", 500, 50, 1000 * 1000);
     BUFFER = COMMON_BUILDER.comment("Grid buffer").defineInRange("buffer", 8, 2, 1000);
     LOWEST = COMMON_BUILDER.comment("Minimum Y level").defineInRange("lowestY", 50, 0, 256);
     HIGHEST = COMMON_BUILDER.comment("Maximum Y level").defineInRange("highestY", 100, 0, 256);
-    OVERWORLDONLY = COMMON_BUILDER.comment("Only allowed to make nether portals in the overworld").define("overworldOnly", true);
+    OVERWORLDONLY = COMMON_BUILDER.comment("Only allowed to make nether portals in the overworld").define("overworldOnly", false);
     COMMON_BUILDER.pop();
     COMMON_CONFIG = COMMON_BUILDER.build();
   }

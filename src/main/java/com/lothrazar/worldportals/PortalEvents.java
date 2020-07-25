@@ -1,14 +1,12 @@
 package com.lothrazar.worldportals;
 
+import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -32,24 +30,26 @@ public class PortalEvents {
     if (!(event.getWorld() instanceof World)) {
       return;
     }
-    if (this.allowedHere(event.getWorld(), pos) != PortalRejectReason.ALLOWED) {
+    World world = (World) event.getWorld();
+    PortalRejectReason allowed = this.allowedHere(world, pos);
+    if (allowed != PortalRejectReason.ALLOWED) {
       event.setCanceled(true);
-      World world = (World) event.getWorld();
-      world.extinguishFire(null, pos, Direction.UP);
-      if (world.getBlockState(pos).getBlock() == Blocks.FIRE) {
+      //      world.extinguishFire(null, pos, Direction.UP);
+      if (world.getBlockState(pos).getBlock() instanceof AbstractFireBlock) {
+        //extinguish
         world.setBlockState(pos, Blocks.AIR.getDefaultState());
       }
-      //      world.extinguishFire(null, pos.offset(event.), Direction.UP); 
-      //      world.addEntity(new TNTEntity(EntityType.TNT, world));
-      ExampleMod.LOGGER.info("nope " + world.isRemote);
+      //      LatticePortalsMod.LOGGER.info("nope " + allowed);
       if (world.isRemote) {
+        String allowedString = this.getAllowedString(allowed);
+        LatticePortalsMod.proxy.getClientPlayer().sendStatusMessage(new TranslationTextComponent(allowedString), true);
         world.addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, pos.getX(), pos.getY(), pos.getZ(), 0, 0.1, 0);
         world.addParticle(ParticleTypes.BUBBLE, pos.getX(), pos.getY(), pos.getZ(), 0, 0.1, 0);
         world.addParticle(ParticleTypes.BUBBLE, pos.getX(), pos.getY(), pos.getZ(), 0, 0.1, 0);
         world.addParticle(ParticleTypes.BUBBLE, pos.getX(), pos.getY(), pos.getZ(), 0, 0.1, 0);
         world.addParticle(ParticleTypes.BUBBLE, pos.getX(), pos.getY(), pos.getZ(), 0, 0.1, 0);
         world.addParticle(ParticleTypes.BARRIER, pos.getX(), pos.getY(), pos.getZ(), 0, 0.1, 0);
-        ExampleMod.proxy.getClientPlayer().sendStatusMessage(new TranslationTextComponent("nope"), true);
+        LatticePortalsMod.proxy.getClientPlayer().sendStatusMessage(new TranslationTextComponent("nope"), true);
         //chat message 
       }
     }
@@ -57,38 +57,28 @@ public class PortalEvents {
 
   public static String lang(String message) {
     TranslationTextComponent t = new TranslationTextComponent(message);
-    return t.getFormattedText();
+    return t.getString();
   }
 
   // F3 screen text overlay event
   @SubscribeEvent
   @OnlyIn(Dist.CLIENT)
   public void onDebugOverlay(RenderGameOverlayEvent.Text event) {
-    BlockPos pos = ExampleMod.proxy.getClientPlayer().getPosition();
+    BlockPos pos = LatticePortalsMod.proxy.getClientPlayer().func_233580_cy_();//.getPosition();
     if (Minecraft.getInstance().gameSettings.showDebugInfo == false) {
       return;
     } //if f3 is not pressed
-    switch (this.allowedHere(ExampleMod.proxy.getClientWorld(), pos)) {
-      case ALLOWED:
-        event.getLeft().add(lang(ExampleMod.MODID + ".f3.allowed"));
-      break;
-      case DIMENSION:
-        event.getLeft().add(lang(ExampleMod.MODID + ".f3.dimension"));
-      break;
-      case XGRID:
-        event.getLeft().add(lang(ExampleMod.MODID + ".f3.xgrid"));
-      break;
-      case YGRID:
-        event.getLeft().add(lang(ExampleMod.MODID + ".f3.ygrid"));
-      break;
-      case ZGRID:
-        event.getLeft().add(lang(ExampleMod.MODID + ".f3.zgrid"));
-      break;
-    }
+    String allowedString = this.getAllowedString(this.allowedHere(LatticePortalsMod.proxy.getClientWorld(), pos));
+    event.getLeft().add(allowedString);
   }
 
-  private PortalRejectReason allowedHere(IWorld world, BlockPos pos) {
-    if (world.getDimension().getType() != DimensionType.OVERWORLD
+  private String getAllowedString(PortalRejectReason allowedHere) {
+    return lang(LatticePortalsMod.MODID + ".f3." + allowedHere.name().toLowerCase());
+  }
+
+  private PortalRejectReason allowedHere(World world, BlockPos pos) {
+    boolean isOverworld = world.func_234923_W_() != World.field_234918_g_;
+    if (isOverworld
         && ConfigManager.OVERWORLDONLY.get()) {
       return PortalRejectReason.DIMENSION;
     }
