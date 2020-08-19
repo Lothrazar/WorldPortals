@@ -64,7 +64,7 @@ public class PortalEvents {
   @SubscribeEvent
   @OnlyIn(Dist.CLIENT)
   public void onDebugOverlay(RenderGameOverlayEvent.Text event) {
-    BlockPos pos = LatticePortalsMod.proxy.getClientPlayer().func_233580_cy_();//.getPosition();
+    BlockPos pos = LatticePortalsMod.proxy.getClientPlayer().getPosition();//.getPosition();
     if (Minecraft.getInstance().gameSettings.showDebugInfo == false) {
       return;
     } //if f3 is not pressed
