@@ -77,7 +77,8 @@ public class PortalEvents {
   }
 
   private PortalRejectReason allowedHere(World world, BlockPos pos) {
-    boolean isOverworld = world.func_234923_W_() != World.field_234918_g_;
+    //    World.OVERWORLD = world.getDimensionKey()
+    boolean isOverworld = world.getDimensionKey() != World.OVERWORLD;
     if (isOverworld
         && ConfigManager.OVERWORLDONLY.get()) {
       return PortalRejectReason.DIMENSION;
