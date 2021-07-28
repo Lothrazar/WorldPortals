@@ -1,12 +1,13 @@
 package com.lothrazar.worldportals;
 
-import net.minecraft.block.AbstractFireBlock;
-import net.minecraft.block.Blocks;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.BaseFireBlock;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -27,36 +28,39 @@ public class PortalEvents {
     //    event.getPortalSize().getHeight() 
     //    event.getPortalSize().getWidth()
     BlockPos pos = event.getPos();
-    if (!(event.getWorld() instanceof World)) {
+    if (!(event.getWorld() instanceof Level)) {
       return;
     }
-    World world = (World) event.getWorld();
+    Level world = (Level) event.getWorld();
     PortalRejectReason allowed = this.allowedHere(world, pos);
     if (allowed != PortalRejectReason.ALLOWED) {
       event.setCanceled(true);
-      //      world.extinguishFire(null, pos, Direction.UP);
-      if (world.getBlockState(pos).getBlock() instanceof AbstractFireBlock) {
+      if (world.getBlockState(pos).getBlock() instanceof BaseFireBlock) {
         //extinguish
-        world.setBlockState(pos, Blocks.AIR.getDefaultState());
+        world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
       }
-      //      LatticePortalsMod.LOGGER.info("nope " + allowed);
-      if (world.isRemote) {
+      if (world.isClientSide) {
         String allowedString = this.getAllowedString(allowed);
-        LatticePortalsMod.proxy.getClientPlayer().sendStatusMessage(new TranslationTextComponent(allowedString), true);
+        getClientPlayer().displayClientMessage(new TranslatableComponent(allowedString), true);
         world.addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, pos.getX(), pos.getY(), pos.getZ(), 0, 0.1, 0);
         world.addParticle(ParticleTypes.BUBBLE, pos.getX(), pos.getY(), pos.getZ(), 0, 0.1, 0);
         world.addParticle(ParticleTypes.BUBBLE, pos.getX(), pos.getY(), pos.getZ(), 0, 0.1, 0);
         world.addParticle(ParticleTypes.BUBBLE, pos.getX(), pos.getY(), pos.getZ(), 0, 0.1, 0);
         world.addParticle(ParticleTypes.BUBBLE, pos.getX(), pos.getY(), pos.getZ(), 0, 0.1, 0);
         world.addParticle(ParticleTypes.BARRIER, pos.getX(), pos.getY(), pos.getZ(), 0, 0.1, 0);
-        LatticePortalsMod.proxy.getClientPlayer().sendStatusMessage(new TranslationTextComponent("nope"), true);
+        getClientPlayer().displayClientMessage(new TranslatableComponent("nope"), true);
         //chat message 
       }
     }
   }
 
+  @OnlyIn(Dist.CLIENT)
+  private Player getClientPlayer() {
+    return Minecraft.getInstance().player;
+  }
+
   public static String lang(String message) {
-    TranslationTextComponent t = new TranslationTextComponent(message);
+    TranslatableComponent t = new TranslatableComponent(message);
     return t.getString();
   }
 
@@ -64,11 +68,11 @@ public class PortalEvents {
   @SubscribeEvent
   @OnlyIn(Dist.CLIENT)
   public void onDebugOverlay(RenderGameOverlayEvent.Text event) {
-    BlockPos pos = LatticePortalsMod.proxy.getClientPlayer().getPosition();//.getPosition();
-    if (Minecraft.getInstance().gameSettings.showDebugInfo == false) {
+    BlockPos pos = getClientPlayer().blockPosition();
+    if (Minecraft.getInstance().options.renderDebug == false) {
       return;
     } //if f3 is not pressed
-    String allowedString = this.getAllowedString(this.allowedHere(LatticePortalsMod.proxy.getClientWorld(), pos));
+    String allowedString = this.getAllowedString(this.allowedHere(Minecraft.getInstance().level, pos));
     event.getLeft().add(allowedString);
   }
 
@@ -76,9 +80,8 @@ public class PortalEvents {
     return lang(LatticePortalsMod.MODID + ".f3." + allowedHere.name().toLowerCase());
   }
 
-  private PortalRejectReason allowedHere(World world, BlockPos pos) {
-    //    World.OVERWORLD = world.getDimensionKey()
-    boolean isOverworld = world.getDimensionKey() != World.OVERWORLD;
+  private PortalRejectReason allowedHere(Level world, BlockPos pos) {
+    boolean isOverworld = world.dimension() != Level.OVERWORLD;
     if (isOverworld
         && ConfigManager.OVERWORLDONLY.get()) {
       return PortalRejectReason.DIMENSION;
