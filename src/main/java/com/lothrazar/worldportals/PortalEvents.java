@@ -47,7 +47,7 @@ public class PortalEvents {
         world.addParticle(ParticleTypes.BUBBLE, pos.getX(), pos.getY(), pos.getZ(), 0, 0.1, 0);
         world.addParticle(ParticleTypes.BUBBLE, pos.getX(), pos.getY(), pos.getZ(), 0, 0.1, 0);
         world.addParticle(ParticleTypes.BUBBLE, pos.getX(), pos.getY(), pos.getZ(), 0, 0.1, 0);
-        world.addParticle(ParticleTypes.BARRIER, pos.getX(), pos.getY(), pos.getZ(), 0, 0.1, 0);
+//        world.addParticle(ParticleTypes.BARRIER, pos.getX(), pos.getY(), pos.getZ(), 0, 0.1, 0);
         getClientPlayer().displayClientMessage(new TranslatableComponent("nope"), true);
         //chat message 
       }

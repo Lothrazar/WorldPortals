@@ -1,11 +1,9 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/nether-portal-grid",
   "promos": {
-    "1.17.1-latest": "1.0.1",
-    "1.17.1-recommended": "1.0.1"
+    "1.18-latest": "1.0.1"
   },
-  "1.17.1": {
-  	"1.0.0":"Release",
+  "1.18": {
     "1.0.1": "Ported"
   }
 }
