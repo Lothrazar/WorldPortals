@@ -1,13 +1,13 @@
 package com.lothrazar.worldportals;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -41,14 +41,14 @@ public class PortalEvents {
       }
       if (world.isClientSide) {
         String allowedString = this.getAllowedString(allowed);
-        getClientPlayer().displayClientMessage(new TranslatableComponent(allowedString), true);
+        getClientPlayer().displayClientMessage(Component.translatable(allowedString), true);
         world.addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, pos.getX(), pos.getY(), pos.getZ(), 0, 0.1, 0);
         world.addParticle(ParticleTypes.BUBBLE, pos.getX(), pos.getY(), pos.getZ(), 0, 0.1, 0);
         world.addParticle(ParticleTypes.BUBBLE, pos.getX(), pos.getY(), pos.getZ(), 0, 0.1, 0);
         world.addParticle(ParticleTypes.BUBBLE, pos.getX(), pos.getY(), pos.getZ(), 0, 0.1, 0);
         world.addParticle(ParticleTypes.BUBBLE, pos.getX(), pos.getY(), pos.getZ(), 0, 0.1, 0);
-//        world.addParticle(ParticleTypes.BARRIER, pos.getX(), pos.getY(), pos.getZ(), 0, 0.1, 0);
-        getClientPlayer().displayClientMessage(new TranslatableComponent("nope"), true);
+        //        world.addParticle(ParticleTypes.BARRIER, pos.getX(), pos.getY(), pos.getZ(), 0, 0.1, 0);
+        getClientPlayer().displayClientMessage(Component.translatable("nope"), true);
         //chat message 
       }
     }
@@ -60,8 +60,7 @@ public class PortalEvents {
   }
 
   public static String lang(String message) {
-    TranslatableComponent t = new TranslatableComponent(message);
-    return t.getString();
+    return Component.translatable(message).getString();
   }
 
   // F3 screen text overlay event

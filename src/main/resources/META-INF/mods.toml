@@ -22,7 +22,7 @@ version="${file.jarVersion}" #mandatory
  # A display name for the mod
 displayName="Lattice Grid portals" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification <here>
-updateJSONURL="https://raw.githubusercontent.com/Lothrazar/WorldPortals/trunk/1.18/update.json" #optional
+updateJSONURL="https://raw.githubusercontent.com/Lothrazar/WorldPortals/trunk/1.19/update.json" #optional
 # A URL for the "homepage" for this mod, displayed in the mod UI
 displayURL="https://www.curseforge.com/minecraft/mc-mods/nether-portal-grid" #optional
 # A file name (in the root of the mod JAR) containing a logo for display
@@ -42,7 +42,7 @@ This restricts portal creation by players so its only allowed within specified X
     # Does this dependency have to exist - if not, ordering below must be specified
     mandatory=true #mandatory
     # The version range of the dependency
-    versionRange="[33,)" #mandatory
+    versionRange="[40,)" #mandatory
     # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
     ordering="NONE"
     # Side this dependency is applied on - BOTH, CLIENT or SERVER
@@ -51,6 +51,6 @@ This restricts portal creation by players so its only allowed within specified X
 [[dependencies.worldportals]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.2,)"
+    versionRange="[1.19,)"
     ordering="NONE"
     side="BOTH"
