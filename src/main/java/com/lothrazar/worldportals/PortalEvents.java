@@ -10,9 +10,9 @@ import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.CustomizeGuiOverlayEvent;
 import net.minecraftforge.event.entity.EntityMobGriefingEvent;
-import net.minecraftforge.event.world.BlockEvent.PortalSpawnEvent;
+import net.minecraftforge.event.level.BlockEvent.PortalSpawnEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class PortalEvents {
@@ -28,10 +28,10 @@ public class PortalEvents {
     //    event.getPortalSize().getHeight() 
     //    event.getPortalSize().getWidth()
     BlockPos pos = event.getPos();
-    if (!(event.getWorld() instanceof Level)) {
+    if (!(event.getLevel() instanceof Level)) {
       return;
     }
-    Level world = (Level) event.getWorld();
+    Level world = (Level) event.getLevel();
     PortalRejectReason allowed = this.allowedHere(world, pos);
     if (allowed != PortalRejectReason.ALLOWED) {
       event.setCanceled(true);
@@ -65,8 +65,8 @@ public class PortalEvents {
 
   // F3 screen text overlay event
   @SubscribeEvent
-  @OnlyIn(Dist.CLIENT)
-  public void onDebugOverlay(RenderGameOverlayEvent.Text event) {
+  @OnlyIn(Dist.CLIENT) // RenderGameOverlayEvent.Text  :: was old way
+  public void onDebugOverlay(CustomizeGuiOverlayEvent.DebugText event) {
     BlockPos pos = getClientPlayer().blockPosition();
     if (Minecraft.getInstance().options.renderDebug == false) {
       return;
